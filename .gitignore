@@ -1,0 +1,5 @@
+.pixi/
+.hf/
+outputs/
+inputs/
+*.pyc

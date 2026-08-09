@@ -1,0 +1,48 @@
+[workspace]
+name = "image_gen"
+description = "Qwen-Image-Edit-2511 image editing environment"
+channels = ["conda-forge"]
+platforms = ["linux-64"]
+
+[activation.env]
+# Keep the ~57GB model snapshot on the shared volume next to the project so it
+# survives container restarts.
+HF_HOME = "$PIXI_PROJECT_ROOT/.hf"
+HF_XET_HIGH_PERFORMANCE = "1"
+TOKENIZERS_PARALLELISM = "false"
+
+[dependencies]
+python = "3.12.*"
+
+[pypi-options]
+extra-index-urls = ["https://download.pytorch.org/whl/cu128"]
+
+[pypi-dependencies]
+torch = "*"
+torchvision = "*"
+# QwenImageEditPlusPipeline support for 2511 only exists on diffusers main.
+diffusers = { git = "https://github.com/huggingface/diffusers" }
+transformers = ">=4.57"
+accelerate = "*"
+safetensors = "*"
+sentencepiece = "*"
+protobuf = "*"
+pillow = "*"
+huggingface-hub = "*"
+hf-transfer = "*"
+
+[tasks.gpu-check]
+description = "Report torch/CUDA visibility"
+cmd = "python scripts/gpu_check.py"
+
+[tasks.download]
+description = "Fetch the Qwen-Image-Edit-2511 snapshot into .hf"
+cmd = "python scripts/download_model.py"
+
+[tasks.edit]
+description = "Run an image edit (see scripts/edit.py --help)"
+cmd = "python scripts/edit.py"
+
+[tasks.tests]
+description = "Run the image-edit test suite and build the review sheet"
+cmd = "python scripts/run_tests.py"
