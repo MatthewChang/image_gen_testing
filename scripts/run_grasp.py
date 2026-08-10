@@ -7,10 +7,10 @@ drag in the second hand, a torso, or a face — so the exclusions still live in 
 negative prompt and the positive prompt spends its words on the grasp itself.
 
 A "functional grasp" is object-specific: the grip a person actually uses to do
-the thing the object is for. So each object carries its own grasp description
-(GRASPS) rather than a generic "holding it" — a pizza peel is gripped at the very
-end of the handle with a closed fist, which is what makes it read as *in use*
-rather than merely picked up.
+the thing the object is for, so each object carries its own grasp description in
+GRASPS rather than a generic "holding it".
+
+See GRASP_GUIDE.md to add an object, or to diagnose a render that came out wrong.
 """
 
 from __future__ import annotations
@@ -42,11 +42,8 @@ NEGATIVE = (
 
 # (slug, object description, functional grasp description)
 #
-# The grasps are deliberately of different *types* — power grip on a long handle,
-# power grip with the thumb braced along a bolster, hook grip through a handle,
-# palmar drape — because a placement prompt that only works for one grip type is
-# not much use. They also come to rest differently (flat, flat, upright on a base,
-# down on its feet), which is what stresses a generic "set it down" instruction.
+# These four span different grip types *and* different resting poses, which is
+# what stresses the object-agnostic placement prompt in run_place_down.py.
 GRASPS = {
     "pizza-peel": (
         "a large flat wooden pizza peel with a long straight handle",

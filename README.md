@@ -70,14 +70,10 @@ python scripts/run_grasp.py --object mug --ratio 16:9   # object held in a funct
 python scripts/run_place_down.py --object mug           # same object set back down, hand gone
 ```
 
-`run_grasp.py` carries a per-object grasp spec (`GRASPS`) — the grip a person
-actually uses for that object, named by type (power grip, hook grip, palmar
-drape) with finger/thumb topology and task intent. Generic "holding it" reads as
-merely picked up rather than in use.
+`run_grasp.py` carries a per-object grasp spec in its `GRASPS` dict.
 
-**To add an object, see [GRASP_GUIDE.md](GRASP_GUIDE.md)** — the five slots every
-grasp spec needs, grip vocabulary, what to leave out, and how to read the three
-prompt variants as a diagnostic.
+[GRASP_GUIDE.md](GRASP_GUIDE.md) — **adding an object** to `GRASPS`, or
+**diagnosing a grasp render** that came out wrong.
 
 `run_place_down.py` is object-agnostic: its prompts say "the object" and never
 name it, so one prompt serves every object and grasp type. The source image
