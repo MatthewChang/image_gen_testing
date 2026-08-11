@@ -63,7 +63,31 @@ background; `--anchor center` discards it and the model reinvents the room.
 
 ### Grasp / place-down pair
 
-Two scripts produce the two halves of a pickup, on `inputs/counter.jpeg`:
+### Manifest pipelines (production)
+
+Two scripts generate before/after pickup pairs from a manifest CSV
+(`id,object_description,grasp_description,seed`; seed optional, default 1),
+writing `<out>/<id>/before.png` + `<out>/<id>/after.png`, both 1376×768:
+
+```bash
+# A: grasp render ("explicit") -> "remove" placing edit; needs grasp_description
+python scripts/run_pair_grasp_first.py -i inputs/manifests/m.csv -o outputs/pairs_grasp_first/
+
+# B: counter render ("reach") -> "add" pickup edit; object_description only
+python scripts/run_pair_before_first.py -i inputs/manifests/m.csv -o outputs/pairs_before_first/
+```
+
+Rows fan out dynamically across visible GPUs (one pipeline per GPU). Reruns are
+idempotent — rows whose pair exists are skipped (`--force` regenerates), so
+interrupted runs resume and failures retry with the same command. Failed rows
+are summarised at exit with a nonzero status. Give each pipeline its own `-o`:
+they write the same filenames under the same ids.
+
+The `/author-pair-manifest` skill authors a manifest from a `class,count` CSV,
+generating descriptions, grasp specs, ids and seeds. Validate any manifest with
+`python scripts/pairs_lib.py manifest.csv [--require-grasp]`.
+
+The underlying prompt research lives in four sweep scripts (variants × seeds, with review sheets):
 
 ```bash
 python scripts/run_grasp.py --object mug --ratio 16:9   # object held in a functional grasp
