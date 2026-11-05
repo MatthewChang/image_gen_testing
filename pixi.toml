@@ -74,6 +74,23 @@ huggingface-hub = "*"
 hf-transfer = "*"
 lpips = "*"
 scikit-image = "*"
+# Model server (scripts/qwen_server.py).
+fastapi = "*"
+uvicorn = "*"
+pydantic = ">=2"
+requests = "*"
+model-serving = { path = "/k8s-nfs/personal/drmchang/projects/model_serving", editable = true }
+
+[feature.bench.tasks.serve]
+description = "Qwen edit server: serve --model {qwen2511,firered11,qwen21turbo} --port N"
+cmd = "python scripts/qwen_server.py"
+# /usr/local/cuda/lib64 (often on LD_LIBRARY_PATH) holds a system cuDNN 9.8 that shadows
+# torch's bundled cuDNN sub-libraries -> CUDNN_STATUS_SUBLIBRARY_LOADING_FAILED in the VAE.
+env = { LD_LIBRARY_PATH = "" }
+
+[feature.bench.tasks.client]
+description = "Send an edit to the server (see scripts/qwen_client.py --help)"
+cmd = "python scripts/qwen_client.py"
 
 [environments]
 bench = { features = ["bench"], no-default-feature = true }
