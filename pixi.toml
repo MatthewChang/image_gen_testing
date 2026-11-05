@@ -46,3 +46,34 @@ cmd = "python scripts/edit.py"
 [tasks.tests]
 description = "Run the image-edit test suite and build the review sheet"
 cmd = "python scripts/run_tests.py"
+
+# --- bench: model comparison env (newer diffusers/transformers) -------------
+# Separate from the default env so the production 2511 pipeline is untouched.
+# Qwen-Image-2.1 needs transformers>=5.17; FLUX 3 Klein needs diffusers main
+# (ModularPipeline) and its prompt upsampler (Qwen3.5 in transformers).
+[feature.bench.dependencies]
+python = "3.12.*"
+
+# no-default-feature drops the workspace activation env, so repeat it here.
+[feature.bench.activation.env]
+HF_HOME = "$PIXI_PROJECT_ROOT/.hf"
+HF_XET_HIGH_PERFORMANCE = "1"
+TOKENIZERS_PARALLELISM = "false"
+
+[feature.bench.pypi-dependencies]
+torch = "*"
+torchvision = "*"
+diffusers = { git = "https://github.com/huggingface/diffusers" }
+transformers = ">=5.17"
+accelerate = "*"
+safetensors = "*"
+sentencepiece = "*"
+protobuf = "*"
+pillow = "*"
+huggingface-hub = "*"
+hf-transfer = "*"
+lpips = "*"
+scikit-image = "*"
+
+[environments]
+bench = { features = ["bench"], no-default-feature = true }
